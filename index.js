@@ -1,22 +1,33 @@
-var cells = document.getElementsByClassName('cell');
-
 function startWorld() {
 	// how many time between refreshes
 	var loopTime = 300; // ms
 
 	var character = new Character;
-	cells[0].innerHTML = 'X';
+	var cells = document.getElementsByClassName('cell');
+	var world = new World(character, cells);
+
 	setTimeout(function runWorld() {
-		run(character);
+		world.run();
 		setTimeout(runWorld, loopTime);
 	}, loopTime);
 }
 
-function run(character) {
+function World(character, cells) {
+	this.character = character;
+	this.cells = cells;
+
+	cells[character.x].innerHTML = 'X';
+}
+World.prototype.run = function () {
+	var speed = character.getSpeed();
+	if (!speed) {
+		return;
+	}
+
 	cells[character.x].innerHTML = '';
 
 	var x = character.x; // caching
-	x += character.getSpeed();
+	x += speed;
 
 	if (x < 0)
 	{ // out of bound (to the left)
@@ -33,7 +44,6 @@ function run(character) {
 
 function Character() {
 	this.x = 0;
-	this.xSpeed = 1;
 }
 Character.prototype.getSpeed = function () {
 	// could use modifiers, etc
