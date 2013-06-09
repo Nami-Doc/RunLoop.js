@@ -1,6 +1,6 @@
 function startWorld() {
 	// how many time between refreshes
-	var loopTime = 300; // ms
+	var loopTime = 100; // ms
 
 	var character = new Character;
 	var cells = document.getElementsByClassName('cell');
@@ -18,22 +18,26 @@ function World(character, cells) {
 
 	cells[character.x].innerHTML = 'X';
 }
+
 World.prototype.run = function () {
+	var character = this.character;
+	var cells = this.cells;
+
 	var speed = character.getSpeed();
 	if (!speed) {
 		return;
 	}
 
-	cells[character.x].innerHTML = '';
-
 	var x = character.x; // caching
+	cells[x].innerHTML = '';
+
 	x += speed;
 
 	if (x < 0)
 	{ // out of bound (to the left)
 		x = 0;
 	}
-	if (x > cells.length)
+	if (x == cells.length)
 	{ // out of bound (to the right)
 		x = cells.length - 1;
 	}
@@ -45,19 +49,23 @@ World.prototype.run = function () {
 function Character() {
 	this.x = 0;
 }
+
 Character.prototype.getSpeed = function () {
 	// could use modifiers, etc
 	var speed = 0;
 
-	if (buttonPressed.LEFT)
-		speed = -1;
 	if (buttonPressed.RIGHT)
 		speed = 1;
+	if (buttonPressed.LEFT)
+		speed = -1;
 
 	return speed;
 };
 
-var buttonPressed = {};
+var buttonPressed = {
+	RIGHT: false,
+	LEFT: false
+};
 document.addEventListener('keydown', onKeyDown);
 document.addEventListener('keyup', onKeyUp);
 

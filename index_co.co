@@ -1,0 +1,52 @@
+function startWorld
+	loop-time = 100ms
+	character = new Character
+	cells = document.getEmentsByClassName 'cell'
+	world = new World character, cells
+
+	:runWorld let
+		setTimeout ->
+			world.run!
+			runWorld!
+		, loop-time
+
+class World
+	(@character, @cells) ->
+		cells[character.x]innerHTML = 'X'
+
+	run: ->
+		{character, cells} = this
+		return unless speed = character.getSpeed!
+
+		x = character.x
+		cells[x]innerHTML = ''
+		x += speed
+
+		x <?= 0
+		x = cells.length - 1 if x is cells.length
+
+		cells[x]innerHTML = 'X'
+		character.x = x
+
+class Character
+	-> @x = 0
+
+	getSpeed: -> if
+		buttonPressed.RIGHT => 1
+		buttonPressed.LEFT  => -1
+		else 0
+
+buttonPressed =
+	RIGHT: false
+	LEFT: false
+
+keyMap =
+	39: 'RIGHT'
+	37: 'LEFT'
+
+for let name, value in {keydown: true keyup: false}
+	document.addEventListener name, !->
+		return unless key = keyMap[it.which]
+
+		console.log "#name: #key"
+		buttonPressed[key] = value
